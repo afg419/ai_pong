@@ -10,7 +10,7 @@ def setup
   no_stroke
 
   @player = :human
-  @training_set = [] #[{i:[s1, s2], o: o1}, ...]
+  @training_set = []
   @nn = NeuralNetwork.new(2,1,5,1)
   @predicted_paddle_location = nil
 
@@ -30,40 +30,22 @@ def draw
   fill 0, 20
   rect 0, 0, width, height
 
-  if @player == :human
-    if key_pressed?
-      if key == 'a'
-        @p.p_x += -2.5
-      elsif key == 'd'
-        @p.p_x += 2.5
-      end
-    end
-  end
-
-  if @player == :computer
-    if !@b.first_pass && @training_set.last[:i].length == 2
-      @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
-      p @predicted_paddle_location
-      if @predicted_paddle_location < @p.p_x
-        @p.p_x += -2.5
-      elsif @predicted_paddle_location > @p.p_x
-        @p.p_x += 2.5
-      end
-    else
-      @predicted_paddle_location = nil
-    end
-  end
-
-  @b.reflect
-
   @walls.each do |wall|
     wall.sketch
   end
 
-  @b.snap_shot(@training_set)
+  if @player == :human
+    human_controls
+  end
 
-  @p.sketch
+  if @player == :computer
+    network_controls
+  end
+
+  @b.snap_shot(@training_set)
+  @b.reflect
   @b.update_position
+  @p.sketch
   @b.sketch
 end
 
@@ -72,5 +54,29 @@ def key_pressed
     @nt = NetworkTrainer.new(@training_set, @nn, 0.1, 0)
     @nt.train_network(1500)
     @player = :computer
+  end
+end
+
+def human_controls
+  if key_pressed?
+    if key == 'a'
+      @p.p_x += -2.5
+    elsif key == 'd'
+      @p.p_x += 2.5
+    end
+  end
+end
+
+def network_controls
+  if !@b.first_pass && @training_set.last[:i].length == 2
+    @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
+    p @predicted_paddle_location
+    if @predicted_paddle_location < @p.p_x
+      @p.p_x += -2.5
+    elsif @predicted_paddle_location > @p.p_x
+      @p.p_x += 2.5
+    end
+  else
+    @predicted_paddle_location = nil
   end
 end
