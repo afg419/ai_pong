@@ -81,4 +81,28 @@ class Ball
     end
   end
 
+  def snap_shot_timer(training_set, time)
+    case time
+    when 5 then training_set << {i: []}
+    when 55
+      training_set.last[:i] << (p_x)/(global_width.to_f)
+      training_set.last[:i] << (p_y)/(global_width.to_f)
+    when 105
+      training_set.last[:i] << (p_x)/(global_width.to_f)
+      training_set.last[:i] << (p_y)/(global_width.to_f)
+    when 205
+      training_set.last[:i] << (p_x)/(global_width.to_f)
+      training_set.last[:i] << (p_y)/(global_width.to_f)
+    when 255
+      training_set.last[:i] << (p_x)/(global_width.to_f)
+      training_set.last[:i] << (p_y)/(global_width.to_f)
+    end
+
+    if collides_with_paddle?
+      training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
+    end
+
+    p training_set
+  end
+
 end

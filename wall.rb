@@ -4,11 +4,11 @@ class Wall
 
   include Processing::Proxy
 
-  def initialize(side, thickness, global_height, global_width)
+  def initialize(side, thickness)
     @side = side
     @thickness = thickness
-    @global_width = global_width
-    @global_height = global_height
+    @global_width = $app.width
+    @global_height = $app.height
   end
 
   def left_sketch

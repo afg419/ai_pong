@@ -9,15 +9,17 @@ def setup
   background 0
   no_stroke
 
+  @time =0
+
   @player = :human
   @training_set = []
-  @nn = NeuralNetwork.new(2,1,5,1)
+  @nn = NeuralNetwork.new(8,1,14,1)
   @predicted_paddle_location = nil
 
   @p = Paddle.new
-  @walls = [Wall.new(:left, 20, width, height),
-    Wall.new(:right, 20, width, height),
-    Wall.new(:bottom, 20, width, height)]
+  @walls = [Wall.new(:left, 20),
+    Wall.new(:right, 20),
+    Wall.new(:bottom, 20)]
   @b = Ball.new(@p,@walls)
 end
 
@@ -42,7 +44,13 @@ def draw
     network_controls
   end
 
-  @b.snap_shot(@training_set)
+  @time += 1
+
+  if @b.collides_with_paddle? || @b.off_screen?
+    @time = 0
+  end
+
+  @b.snap_shot_timer(@training_set,@time)
   @b.reflect
   @b.update_position
   @p.sketch
@@ -51,7 +59,8 @@ end
 
 def key_pressed
   if key == 't'
-    @nt = NetworkTrainer.new(@training_set, @nn, 0.1, 0)
+    usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
+    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 0)
     @nt.train_network(1500)
     @player = :computer
   end
