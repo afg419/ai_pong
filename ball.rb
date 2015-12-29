@@ -33,6 +33,10 @@ class Ball
     p_y - radius < paddle.thickness && paddle.p_x < p_x && p_x < paddle.p_x + paddle.length
   end
 
+  def off_screen?
+    p_y < 0
+  end
+
   def reflect
     if collides_with_left? || collides_with_right?
       self.v_x = -1 * v_x
@@ -40,6 +44,11 @@ class Ball
       self.v_y = -1 * v_y
     elsif collides_with_paddle?
       self.v_y = rand(3.0..4.0)
+    elsif off_screen?
+      self.p_x = rand(global_width/10.0..9/10.0*global_width)
+      self.p_y = 50
+      self.v_x = rand(0.0..3.0)
+      self.v_y = rand(2.0..5.0)
     end
   end
 
