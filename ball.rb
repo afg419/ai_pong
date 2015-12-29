@@ -39,7 +39,7 @@ class Ball
     elsif collides_with_bottom?
       self.v_y = -1 * v_y
     elsif collides_with_paddle?
-      self.v_y = rand(0.5..5.5)
+      self.v_y = rand(3.0..4.0)
     end
   end
 
@@ -58,12 +58,12 @@ class Ball
     if p_y > global_height/2.0 && @first_pass
       @first_pass = false
       training_set << {i:[]}
-      training_set.last[:i] << p_x
+      training_set.last[:i] << (p_x.to_f)/(global_width.to_f)
     elsif collides_with_bottom?
-      training_set.last[:i] << p_x
+      training_set.last[:i] << (p_x.to_f)/(global_width.to_f)
     elsif collides_with_paddle?
       @first_pass = true
-      training_set.last[:o] = [paddle.p_x]
+      training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
     end
   end
 

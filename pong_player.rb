@@ -2,6 +2,7 @@ require_relative 'ball'
 require_relative 'paddle'
 require_relative 'wall'
 require_relative '2neural_networks/lib/network_trainer'
+require 'pry'
 
 def setup
   sketch_title 'Pong!'
@@ -41,13 +42,12 @@ def draw
 
   if @player == :computer
     if !@b.first_pass && @training_set.last[:i].length == 2
-      @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0]
+      @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
+      p @predicted_paddle_location
       if @predicted_paddle_location < @p.p_x
         @p.p_x += -2.5
       elsif @predicted_paddle_location > @p.p_x
         @p.p_x += 2.5
-      elsif @predicted_paddle_location == @p.p_x
-
       end
     else
       @predicted_paddle_location = nil
