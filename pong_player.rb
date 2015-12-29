@@ -41,7 +41,7 @@ def draw
   end
 
   if @player == :computer
-    network_controls
+    network_controls_from_time_train
   end
 
   @time += 1
@@ -73,6 +73,20 @@ def human_controls
     elsif key == 'd'
       @p.p_x += 2.5
     end
+  end
+end
+
+
+def network_controls_from_time_train
+  if @time > 256
+    @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
+    if @predicted_paddle_location < @p.p_x
+      @p.p_x += -2.5
+    elsif @predicted_paddle_location > @p.p_x
+      @p.p_x += 2.5
+    end
+  else
+    @predicted_paddle_location = nil
   end
 end
 

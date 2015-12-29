@@ -101,8 +101,5 @@ class Ball
     if collides_with_paddle?
       training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
     end
-
-    p training_set
   end
-
 end
