@@ -65,8 +65,6 @@ def draw
   @p.sketch
   @b.update_position
   @b.sketch
-
-  p @training_set
 end
 
 def key_pressed
