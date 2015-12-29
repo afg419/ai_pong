@@ -4,7 +4,7 @@ class Ball
 
   attr_accessor :p_x, :p_y, :radius, :v_x, :v_y, :walls, :paddle, :global_width, :global_height, :first_pass
 
-  def initialize(paddle, walls, global_width, global_height)
+  def initialize(paddle, walls)
     @p_x = 500
     @p_y = 100
     @v_x = -1.5
@@ -12,8 +12,8 @@ class Ball
     @radius = 20
     @paddle = paddle
     @walls = walls
-    @global_width = global_width
-    @global_height = global_height
+    @global_width = $app.width
+    @global_height = $app.height
     @first_pass = true
   end
 
@@ -44,12 +44,17 @@ class Ball
       self.v_y = -1 * v_y
     elsif collides_with_paddle?
       self.v_y = rand(3.0..4.0)
+      self.v_x *= rand(0.5..1.5)
     elsif off_screen?
-      self.p_x = rand(global_width/10.0..9/10.0*global_width)
-      self.p_y = 50
-      self.v_x = rand(0.0..3.0)
-      self.v_y = rand(2.0..5.0)
+      reset_ball
     end
+  end
+
+  def reset_ball
+    self.p_x = rand(global_width/10.0..9/10.0*global_width)
+    self.p_y = 50
+    self.v_x = rand(0.0..3.0)
+    self.v_y = rand(2.0..5.0)
   end
 
   def sketch

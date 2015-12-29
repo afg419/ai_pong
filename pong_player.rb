@@ -18,7 +18,7 @@ def setup
   @walls = [Wall.new(:left, 20, width, height),
     Wall.new(:right, 20, width, height),
     Wall.new(:bottom, 20, width, height)]
-  @b = Ball.new(@p,@walls, width, height)
+  @b = Ball.new(@p,@walls)
 end
 
 def settings
