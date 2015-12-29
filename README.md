@@ -3,8 +3,7 @@
 ### An implementation of a neural network to play pong.  
 
 To use: install jruby-art : https://github.com/ruby-processing/JRubyArt  
-Clone this repo:  
-`git clone https://github.com/afg419/ai_pong.git`  
+Clone this repo: `git clone https://github.com/afg419/ai_pong.git`  
   
 Using Jruby-9.0+, run the game with:
 `k9 run pong_player.rb`  
