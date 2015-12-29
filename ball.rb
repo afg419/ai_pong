@@ -2,18 +2,19 @@ class Ball
 
   include Processing::Proxy
 
-  attr_accessor :p_x, :p_y, :radius, :v_x, :v_y, :walls, :paddle, :global_width, :global_height
+  attr_accessor :p_x, :p_y, :radius, :v_x, :v_y, :walls, :paddle, :global_width, :global_height, :first_pass
 
   def initialize(paddle, walls, global_width, global_height)
     @p_x = 500
-    @p_y = 500
+    @p_y = 100
     @v_x = -1.5
-    @v_y = 2.5
+    @v_y = 3.5
     @radius = 20
     @paddle = paddle
     @walls = walls
     @global_width = global_width
     @global_height = global_height
+    @first_pass = true
   end
 
   def collides_with_left?
@@ -53,5 +54,17 @@ class Ball
     self.p_y += v_y
   end
 
+  def snap_shot(training_set)
+    if p_y > global_height/2.0 && @first_pass
+      @first_pass = false
+      training_set << {i:[]}
+      training_set.last[:i] << p_x
+    elsif collides_with_bottom?
+      training_set.last[:i] << p_x
+    elsif collides_with_paddle?
+      @first_pass = true
+      training_set.last[:o] = [paddle.p_x]
+    end
+  end
 
 end
