@@ -15,6 +15,7 @@ class Ball
     @global_width = $app.width
     @global_height = $app.height
     @first_pass = true
+    @second_pass = true
   end
 
   def collides_with_left?
@@ -73,33 +74,41 @@ class Ball
       @first_pass = false
       training_set << {i:[]}
       training_set.last[:i] << (p_x.to_f)/(global_width.to_f)
+    elsif p_y > 3*global_height/4.0 && @second_pass
+      @second_pass = false
+      training_set.last[:i] << (p_x.to_f)/(global_width.to_f)
     elsif collides_with_bottom?
       training_set.last[:i] << (p_x.to_f)/(global_width.to_f)
     elsif collides_with_paddle?
       @first_pass = true
+      @second_pass = true
       training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
+    elsif off_screen?
+      @second_pass = true
+      @first_pass = true
+      training_set.pop
     end
   end
 
-  def snap_shot_timer(training_set, time)
-    case time
-    when 5 then training_set << {i: []}
-    when 55
-      training_set.last[:i] << (p_x)/(global_width.to_f)
-      training_set.last[:i] << (p_y)/(global_width.to_f)
-    when 105
-      training_set.last[:i] << (p_x)/(global_width.to_f)
-      training_set.last[:i] << (p_y)/(global_width.to_f)
-    when 205
-      training_set.last[:i] << (p_x)/(global_width.to_f)
-      training_set.last[:i] << (p_y)/(global_width.to_f)
-    when 255
-      training_set.last[:i] << (p_x)/(global_width.to_f)
-      training_set.last[:i] << (p_y)/(global_width.to_f)
-    end
-
-    if collides_with_paddle?
-      training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
-    end
-  end
+  # def snap_shot_timer(training_set, time)
+  #   case time
+  #   when 5 then training_set << {i: []}
+  #   when 55
+  #     training_set.last[:i] << (p_x)/(global_width.to_f)
+  #     training_set.last[:i] << (p_y)/(global_width.to_f)
+  #   when 105
+  #     training_set.last[:i] << (p_x)/(global_width.to_f)
+  #     training_set.last[:i] << (p_y)/(global_width.to_f)
+  #   when 205
+  #     training_set.last[:i] << (p_x)/(global_width.to_f)
+  #     training_set.last[:i] << (p_y)/(global_width.to_f)
+  #   when 255
+  #     training_set.last[:i] << (p_x)/(global_width.to_f)
+  #     training_set.last[:i] << (p_y)/(global_width.to_f)
+  #   end
+  #
+  #   if collides_with_paddle?
+  #     training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
+  #   end
+  # end
 end
