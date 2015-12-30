@@ -11,11 +11,11 @@ def setup
   background 0
   no_stroke
 
-  # @nn = NeuralNetwork.new(3,1,5,1)
   @player = :human
   @training_set = TrainingData.new.data
 
   @predicted_paddle_location = nil
+  @retrain = true
 
   @counter = 0
 
@@ -54,7 +54,9 @@ def draw
 
   if @player == :computer
     network_controls
+    retrain_network
   end
+
   @b.snap_shot(@training_set)
   @b.reflect
   @b.update_position
@@ -90,7 +92,6 @@ end
 def network_controls
   if !@b.first_pass && @training_set.last[:i].length == 3
     @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
-    @counter += 1
     if @predicted_paddle_location < @p.p_x
       @p.p_x += -2.5
     elsif @predicted_paddle_location > @p.p_x
