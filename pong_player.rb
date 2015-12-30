@@ -15,6 +15,7 @@ def setup
   @training_set = TrainingData.new.data
   @nn = NeuralNetwork.new(3,1,5,1)
   @predicted_paddle_location = nil
+  @retrain = true
 
   @counter = 0
 
@@ -53,8 +54,9 @@ def draw
 
   if @player == :computer
     network_controls
+    retrain_network
   end
-  # @b.snap_shot_timer(@training_set,@time)
+
   @b.snap_shot(@training_set)
   @b.reflect
   @b.update_position
@@ -92,23 +94,18 @@ def network_controls
   else
     @predicted_paddle_location = nil
   end
+end
 
-  if @counter == 5
+def retrain_network
+  if @training_set.length % 3 == 0 && @retrain
     usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
-    @nt = NetworkTrainer.new(usable_training_set[-5..-1], @nn, 0.1, 2)
-    @nt.train_network(500)
-    @counter = 0
+    @nt = NetworkTrainer.new(usable_training_set[-3..-1], @nn, 0.1, 2)
+    @nt.train_network(10)
+    p "retraining"
+    p @predicted_paddle_location
+    p "weights: #{@nn.weights.map{|x| x.value}}"
+    @retrain = false
+  elsif @training_set.length % 3 == 1
+    @retrain = true
   end
 end
-# def network_controls_from_time_train
-#   if @time > 256
-#     @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
-#     if @predicted_paddle_location < @p.p_x
-#       @p.p_x += -4.5
-#     elsif @predicted_paddle_location > @p.p_x
-#       @p.p_x += 4.5
-#     end
-#   else
-#     @predicted_paddle_location = nil
-#   end
-# end
