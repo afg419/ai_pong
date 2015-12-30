@@ -11,9 +11,10 @@ def setup
   background 0
   no_stroke
 
+  # @nn = NeuralNetwork.new(3,1,5,1)
   @player = :human
   @training_set = TrainingData.new.data
-  @nn = NeuralNetwork.new(3,1,5,1)
+
   @predicted_paddle_location = nil
 
   @counter = 0
@@ -60,11 +61,13 @@ def draw
   @b.update_position
   @p.sketch
   @b.sketch
+  p @training_set.last
 end
 
 def key_pressed
   if key == 't'
     usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
+    @nn = NeuralNetwork.new(3,1,5,1)
     @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 2)
     @nt.train_network(1500)
     @player = :computer
@@ -90,14 +93,9 @@ def network_controls
     elsif @predicted_paddle_location > @p.p_x
       @p.p_x += 2.5
     end
+    @predicted_paddle_location
   else
     @predicted_paddle_location = nil
-  end
-
-  if @counter == 5
-    usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
-    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 2)
-    @nt.train_network(500)
   end
 end
 # def network_controls_from_time_train

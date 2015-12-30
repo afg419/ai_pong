@@ -7,7 +7,7 @@ class Ball
   def initialize(paddle, walls)
     @p_x = 500
     @p_y = 100
-    @v_x = -1.5
+    @v_x = rand(-0.5..0.5)
     @v_y = 3.5
     @radius = 20
     @paddle = paddle
@@ -45,7 +45,7 @@ class Ball
       self.v_y = -1 * v_y
     elsif collides_with_paddle?
       self.v_y = rand(3.0..4.0)
-      self.v_x *= rand(0.5..1.5)
+      self.v_x *= rand(0.5..2.5)
     elsif off_screen?
       reset_ball
     end
@@ -54,8 +54,8 @@ class Ball
   def reset_ball
     self.p_x = rand(global_width/10.0..9/10.0*global_width)
     self.p_y = 50
-    self.v_x = rand(0.0..3.0)
-    self.v_y = rand(2.0..5.0)
+    self.v_x = rand(-1.0..1.0)
+    self.v_y = rand(2.0..4.0)
   end
 
   def sketch
@@ -86,29 +86,7 @@ class Ball
     elsif off_screen?
       @second_pass = true
       @first_pass = true
-      training_set.last[:o] = [(p_x.to_f)/global_width] - paddle.length/2.0
+      training_set.last[:o] = [(p_x.to_f - paddle.length/2.0)/global_width]
     end
   end
-
-  # def snap_shot_timer(training_set, time)
-  #   case time
-  #   when 5 then training_set << {i: []}
-  #   when 55
-  #     training_set.last[:i] << (p_x)/(global_width.to_f)
-  #     training_set.last[:i] << (p_y)/(global_width.to_f)
-  #   when 105
-  #     training_set.last[:i] << (p_x)/(global_width.to_f)
-  #     training_set.last[:i] << (p_y)/(global_width.to_f)
-  #   when 205
-  #     training_set.last[:i] << (p_x)/(global_width.to_f)
-  #     training_set.last[:i] << (p_y)/(global_width.to_f)
-  #   when 255
-  #     training_set.last[:i] << (p_x)/(global_width.to_f)
-  #     training_set.last[:i] << (p_y)/(global_width.to_f)
-  #   end
-  #
-  #   if collides_with_paddle?
-  #     training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
-  #   end
-  # end
 end
