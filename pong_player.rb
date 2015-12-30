@@ -11,12 +11,12 @@ def setup
   background 0
   no_stroke
 
-  @time =0
-
   @player = :human
   @training_set = TrainingData.new.data
   @nn = NeuralNetwork.new(3,1,5,1)
   @predicted_paddle_location = nil
+
+  @counter = 0
 
   @p = Paddle.new
   @walls = [Wall.new(:left, 20),
@@ -39,17 +39,6 @@ def save_training_data_to_file(trainer)
   `echo "end" >> trainer.rb`
 end
 
-def convert_from_csv(input_num)
-  training_data = CSV.read("training.csv")
-  training_data.map do |row|
-    i_o = {}
-    row = row.map(&:to_f)
-    i_o[:i] = row[0..input_num]
-    i_o[:o] = row[input_num + 1 ..-1]
-    i_o
-  end
-end
-
 def draw
   fill 0, 20
   rect 0, 0, width, height
@@ -65,12 +54,6 @@ def draw
   if @player == :computer
     network_controls
   end
-
-  @time += 1
-
-  if @b.collides_with_paddle? || @b.off_screen?
-    @time = 0
-  end
   # @b.snap_shot_timer(@training_set,@time)
   @b.snap_shot(@training_set)
   @b.reflect
@@ -81,11 +64,9 @@ end
 
 def key_pressed
   if key == 't'
-    p usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
-    # save_training_data_to_file(usable_training_set)
-
-    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 0)
-    @nt.train_network(100)
+    usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
+    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 2)
+    @nt.train_network(1500)
     @player = :computer
   end
 end
@@ -102,9 +83,8 @@ end
 
 def network_controls
   if !@b.first_pass && @training_set.last[:i].length == 3
-    p @training_set
     @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
-     @predicted_paddle_location
+    @counter += 1
     if @predicted_paddle_location < @p.p_x
       @p.p_x += -2.5
     elsif @predicted_paddle_location > @p.p_x
@@ -112,6 +92,12 @@ def network_controls
     end
   else
     @predicted_paddle_location = nil
+  end
+
+  if @counter == 5
+    usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
+    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 2)
+    @nt.train_network(500)
   end
 end
 # def network_controls_from_time_train

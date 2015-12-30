@@ -82,11 +82,11 @@ class Ball
     elsif collides_with_paddle?
       @first_pass = true
       @second_pass = true
-      training_set.last[:o] = [(paddle.p_x.to_f)/(global_width.to_f)]
+      training_set.last[:o] = [(paddle.p_x.to_f)/(global_width)]
     elsif off_screen?
       @second_pass = true
       @first_pass = true
-      training_set.pop
+      training_set.last[:o] = [(p_x.to_f)/global_width] - paddle.length/2.0
     end
   end
 
