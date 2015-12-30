@@ -55,7 +55,6 @@ def draw
   if @player == :computer
     network_controls
   end
-  # @b.snap_shot_timer(@training_set,@time)
   @b.snap_shot(@training_set)
   @b.reflect
   @b.update_position
@@ -64,6 +63,8 @@ def draw
   p @training_set.last
 end
 
+
+
 def key_pressed
   if key == 't'
     usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
@@ -71,6 +72,8 @@ def key_pressed
     @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 2)
     @nt.train_network(1500)
     @player = :computer
+  elsif key == 'g'
+    save_training_data_to_file(@training_set)
   end
 end
 
@@ -98,15 +101,3 @@ def network_controls
     @predicted_paddle_location = nil
   end
 end
-# def network_controls_from_time_train
-#   if @time > 256
-#     @predicted_paddle_location ||= @nn.forward_propogate(@training_set.last[:i])[0] * width
-#     if @predicted_paddle_location < @p.p_x
-#       @p.p_x += -4.5
-#     elsif @predicted_paddle_location > @p.p_x
-#       @p.p_x += 4.5
-#     end
-#   else
-#     @predicted_paddle_location = nil
-#   end
-# end
