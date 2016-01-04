@@ -63,7 +63,14 @@ def draw
   p @training_set.last
 end
 
-
+def save_network_to_file
+  `rm -rf trained_network.rb`
+  `echo "class TrainedNetwork" >> trained_network.rb`
+  `echo "\tdef self.net" >> trained_network.rb`
+  `echo "\t\t#{@nn}" >> trained_network.rb`
+  `echo "\tend" >> trained_network.rb`
+  `echo "end" >> trained_network.rb`
+end
 
 def key_pressed
   if key == 't'
@@ -74,6 +81,8 @@ def key_pressed
     @player = :computer
   elsif key == 'g'
     save_training_data_to_file(@training_set)
+  elsif key == 'b'
+    save_network_to_file
   end
 end
 

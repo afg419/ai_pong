@@ -4,4 +4,4 @@ class TrainingData
 	end
 end
 
-p TrainingData.new.data.count
+TrainingData.new.data.count
