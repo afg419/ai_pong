@@ -3,6 +3,7 @@ require_relative 'paddle'
 require_relative 'wall'
 require_relative '2neural_networks/lib/network_trainer'
 require_relative 'trainer'
+require_relative 'training_data'
 require 'pry'
 require 'csv'
 
@@ -11,9 +12,8 @@ def setup
   background 0
   no_stroke
 
-  # @nn = NeuralNetwork.new(3,1,5,1)
   @player = :human
-  @training_set = TrainingData.new.data
+  @training_set = TrainingData.new.training_set
 
   @predicted_paddle_location = nil
 
@@ -66,8 +66,8 @@ end
 def save_network_to_file
   `rm -rf trained_network.rb`
   `echo "class TrainedNetwork" >> trained_network.rb`
-  `echo "\tdef self.net" >> trained_network.rb`
-  `echo "\t\t#{@nn}" >> trained_network.rb`
+  `echo "\tdef trained_weights" >> trained_network.rb`
+  `echo "\t\t#{@nn.weights.map{|w| w. value}}" >> trained_network.rb`
   `echo "\tend" >> trained_network.rb`
   `echo "end" >> trained_network.rb`
 end
@@ -75,9 +75,9 @@ end
 def key_pressed
   if key == 't'
     usable_training_set = @training_set.reject{|i_o| i_o[:o].nil?}
-    @nn = NeuralNetwork.new(3,1,5,1)
-    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.1, 2)
-    @nt.train_network(1500)
+    @nn = NeuralNetwork.new(3,1,3,1)
+    @nt = NetworkTrainer.new(usable_training_set, @nn, 0.45, 3.2)
+    @nt.train_network(500)
     @player = :computer
   elsif key == 'g'
     save_training_data_to_file(@training_set)
